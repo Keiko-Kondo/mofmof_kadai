@@ -10,11 +10,13 @@ class HousesController < ApplicationController
   # GET /houses/1
   # GET /houses/1.json
   def show
+    @nearest_stations = @house.nearest_stations
   end
 
   # GET /houses/new
   def new
     @house = House.new
+    2.times{@house.nearest_stations.build}
   end
 
   # GET /houses/1/edit
@@ -26,15 +28,11 @@ class HousesController < ApplicationController
   def create
     @house = House.new(house_params)
 
-    respond_to do |format|
       if @house.save
-        format.html { redirect_to @house, notice: 'House was successfully created.' }
-        format.json { render :show, status: :created, location: @house }
+        redirect_to @house, notice: 'House was successfully created.'
       else
-        format.html { render :new }
-        format.json { render json: @house.errors, status: :unprocessable_entity }
+        render :new
       end
-    end
   end
 
   # PATCH/PUT /houses/1
@@ -55,10 +53,7 @@ class HousesController < ApplicationController
   # DELETE /houses/1.json
   def destroy
     @house.destroy
-    respond_to do |format|
-      format.html { redirect_to houses_url, notice: 'House was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+      redirect_to houses_url, notice: 'House was successfully destroyed.'
   end
 
   private
@@ -69,6 +64,6 @@ class HousesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def house_params
-      params.fetch(:house, {})
+      params.require(:house).permit(:house_name, :rent_fee, :address, :age, :note, nearest_stations_attributes: [:line, :station, :minutes])
     end
 end
