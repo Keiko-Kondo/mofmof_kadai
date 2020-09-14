@@ -13,15 +13,12 @@ class HousesController < ApplicationController
   def new
     @house = House.new
     @nearest_stations = @house.nearest_stations
-    @i = 0
     2.times{@house.nearest_stations.build}
   end
 
   def edit
     @nearest_stations = @house.nearest_stations
-    @number = @nearest_stations.count
-    @number+1.times{@house.nearest_stations.build}
-    @i = 0
+    @house.nearest_stations.build
   end
 
   def create
@@ -43,7 +40,7 @@ class HousesController < ApplicationController
 
   def destroy
     @house.destroy
-      redirect_to houses_url, notice: 'House was successfully destroyed.'
+    redirect_to houses_url, notice: 'House was successfully destroyed.'
   end
 
   private
@@ -53,7 +50,7 @@ class HousesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def house_params
-      params.require(:house).permit(:house_name, :rent_fee, :address, :age, :note, nearest_stations_attributes: [:id, :line, :station, :minutes])
+      params.require(:house).permit(:house_name, :rent_fee, :address, :age, :note, nearest_stations_attributes: [:id, :line, :station, :minutes, :_destroy])
     end
 
 end
